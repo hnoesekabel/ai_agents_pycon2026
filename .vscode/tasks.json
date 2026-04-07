@@ -1,0 +1,31 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Wait for MCP Crawl4AI",
+      "type": "shell",
+      "presentation": { "reveal": "silent", "close": true },
+      "command": "set -a && source ${workspaceFolder}/.env && set +a && ${workspaceFolder}/scripts/wait_for_server.sh $HOST_MCP_CRAWL4AI $PORT_MCP_CRAWL4AI"
+
+    },
+    {
+      "label": "Wait for MCP Google Search",
+      "type": "shell",
+      "presentation": { "reveal": "silent", "close": true },
+      "command": "set -a && source ${workspaceFolder}/.env && set +a && ${workspaceFolder}/scripts/wait_for_server.sh $HOST_MCP_GOOGLE $PORT_MCP_GOOGLE"
+
+    },
+    {
+      "label": "Wait for MCP World News",
+      "type": "shell",
+      "presentation": { "reveal": "silent", "close": true },
+      "command": "set -a && source ${workspaceFolder}/.env && set +a && ${workspaceFolder}/scripts/wait_for_server.sh $HOST_MCP_NEWS $PORT_MCP_NEWS"
+
+    },
+    {
+      "label": "Wait for all MCP servers to start",
+      "dependsOn": ["Wait for MCP Crawl4AI", "Wait for MCP Google Search", "Wait for MCP World News"],
+      "dependsOrder": "parallel"
+    }
+  ]
+}

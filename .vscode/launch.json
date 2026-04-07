@@ -1,0 +1,85 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "MCP: Crawl4AI",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": ["-lc", "uv run -m mcp_crawl4ai"],
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "MCP: Google Search",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": ["-lc", "uv run -m mcp_google"],
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "MCP: World News",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": ["-lc", "uv run -m mcp_worldnews"],
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Agent: Research",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": ["-lc", "uv run -m agent_research"],
+      "console": "integratedTerminal",
+      "preLaunchTask": "Wait for all MCP servers to start"
+    },
+    {
+      "name": "Agent: Outreach",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": ["-lc", "uv run -m agent_outreach"],
+      "console": "integratedTerminal",
+      "preLaunchTask": "Wait for all MCP servers to start"
+    },
+    {
+      "name": "Agent: Coordinator",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": ["-lc", "uv run -m agent_coordinator"],
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Backend",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": ["-lc", "uv run -m backend"],
+      "console": "integratedTerminal"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "All Servers",
+      "configurations": [
+        "MCP: Crawl4AI",
+        "MCP: Google Search",
+        "MCP: World News",
+        "Backend",
+        "Agent: Research",
+        "Agent: Outreach",
+        "Agent: Coordinator",
+      ],
+      "stopAll": true
+    }
+  ]
+}
