@@ -72,7 +72,9 @@ To create a free API key with World News, sign up with their service for free, t
 
 To enable LangSmith tracing, set `LANGSMITH_API_KEY` in `.env`. The other LangSmith variables (`LANGSMITH_ENDPOINT`, `LANGSMITH_PROJECT`, `LANGCHAIN_TRACING_V2`) are preconfigured in `.env.example`.
 
-## Running
+## Starting
+
+### Command-Line
 
 To start a given agent, backend, or MCP server, run it from the project folder:
 
@@ -90,11 +92,42 @@ This will start the agent / backend / MCP server, and the app will listen on the
 
 Note that the MCP servers should be started first, as the research and outreach agent depend on them. And the coordinator agent depends on the research and outreach agent to be running.
 
-## VS Code: Run MCP servers
+### VS Code
 
-If you use VS Code, this repo includes `.vscode/launch.json` with a configuration for each MCP server and a compound to start all.
+If you use VS Code, this repo includes `.vscode/launch.json` with a configuration for each MCP and Agent server, and a compound to start all.
 
 - Open the project in VS Code
 - Open the Run and Debug view in VS Code (from the left sidebar)
 - Start all servers: choose `All Servers` and press Run. This launches each server in integrated terminals.
 - Stop servers via the stop buttons (it will stop all of them currently) or Ctrl+C in their terminals.
+- Note that there is a helper script awaiting the startup of MCP-Servers, which will show an additional terminal for a few seconds
+
+## Running
+
+If you want to interact with the Coordinator Agent through the FastAPI interface, start the backend server and run, for example:
+
+```bash
+curl -X POST -H "Content-Type: application/json" -d '{"query": "What can you tell me about TD Reply?"}' http://localhost:8080/api/agent
+curl -X POST -H "Content-Type: application/json" -d '{"query": "Who is the CEO of Anthropic?"}' http://localhost:8080/api/agent
+curl http://localhost:8080/api/chat_history
+```
+
+The API is running on 'localhost` on port 8080, and exposes `api/agent` endpoint for agent communication, and `api/chat_history` for the stored chat history.
+
+If you want to test or query one agent specifically, you can use the following scripts in the tests folder:
+
+```bash
+uv run tests/test_coordinator_client.py
+uv run tests/test_outreach_client.py
+uv run tests/test_research_client.py
+```
+
+## Testing
+
+You can run the automated tests with `python -m pytest tests/ -v`.
+
+## Caveats
+
+This is a demo implementation to show MCP and A2A protocol use. This code is not intended for production use.
+
+Be aware that `backend/api/dependencies.py` contains the placehoder of a static header token check, and a placeholder for user management. Right now, all requests are accepted, and the user ID assigned to each request will always be 1.
