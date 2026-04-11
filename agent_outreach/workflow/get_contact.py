@@ -49,15 +49,21 @@ async def get_linkedin_and_email(state: AgentState) -> dict:
 
 async def _search_for_linkedin(ceo: str, company: str) -> str:
     """Fallback Google search for the CEO LinkedIn profile URL."""
-    mcp_client = MultiServerMCPClient(
-        {
-            "search": {
-                "url": MCP_GOOGLE_URL,
-                "transport": "streamable_http",
-            },
-        }
-    )
-    tools = await mcp_client.get_tools()
+    try:
+        mcp_client = MultiServerMCPClient(
+            {
+                "search": {
+                    "url": MCP_GOOGLE_URL,
+                    "transport": "streamable_http",
+                },
+            }
+        )
+        tools = await mcp_client.get_tools()
+    except Exception as e:  # pylint: disable=broad-except
+        logger.error(
+            "Failed to connect to MCP servers for LinkedIn search: %s", repr(e),
+        )
+        return ""
     tool = next((t for t in tools if t.name == "web_search"), None)
 
     if tool is None:
@@ -102,19 +108,26 @@ async def get_ceo(state: AgentState) -> dict:
     return {"recipient": ceo_name}
 
 async def _get_agent():
-    mcp_client = MultiServerMCPClient(
-        {
-            "crawl4ai": {
-                "url": MCP_CRAWL4AI_URL,
-                "transport": "streamable_http",
-            },
-            "google_search": {
-                "url": MCP_GOOGLE_URL,
-                "transport": "streamable_http",
-            },
-        }
-    )
-    tools = await mcp_client.get_tools()
+    tools = []
+    try:
+        mcp_client = MultiServerMCPClient(
+            {
+                "crawl4ai": {
+                    "url": MCP_CRAWL4AI_URL,
+                    "transport": "streamable_http",
+                },
+                "google_search": {
+                    "url": MCP_GOOGLE_URL,
+                    "transport": "streamable_http",
+                },
+            }
+        )
+        tools = await mcp_client.get_tools()
+    except Exception as e:  # pylint: disable=broad-except
+        logger.error(
+            "Failed to connect to MCP servers, will continue with incomplete toolset: %s",
+            repr(e),
+        )
     search_agent = create_agent(
         model=ChatOpenAI(
             model=os.getenv("CHAT_MODEL", "gpt-4.1-mini"),

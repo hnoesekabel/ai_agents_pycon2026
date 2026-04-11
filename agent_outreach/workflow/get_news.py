@@ -32,21 +32,28 @@ async def get_news(state: AgentState) -> dict:
     return {"news": news_content}
 
 async def _get_agent():
-    mcp_client = MultiServerMCPClient({
-        "crawl4ai": {
-            "url": MCP_CRAWL4AI_URL,
-            "transport": "streamable_http",
-        },
-        "google_search": {
-            "url": MCP_GOOGLE_URL,
-            "transport": "streamable_http",
-        },
-        "news": {
-            "url": MCP_NEWS_URL,
-            "transport": "streamable_http",
-        },
-    })
-    tools = await mcp_client.get_tools()
+    tools = []
+    try:
+        mcp_client = MultiServerMCPClient({
+            "crawl4ai": {
+                "url": MCP_CRAWL4AI_URL,
+                "transport": "streamable_http",
+            },
+            "google_search": {
+                "url": MCP_GOOGLE_URL,
+                "transport": "streamable_http",
+            },
+            "news": {
+                "url": MCP_NEWS_URL,
+                "transport": "streamable_http",
+            },
+        })
+        tools = await mcp_client.get_tools()
+    except Exception as e:  # pylint: disable=broad-except
+        logger.error(
+            "Failed to connect to MCP servers, will continue with incomplete toolset: %s",
+            repr(e),
+        )
     search_agent = create_agent(
         model=ChatOpenAI(
             model=os.getenv("CHAT_MODEL", "gpt-4.1-mini"),

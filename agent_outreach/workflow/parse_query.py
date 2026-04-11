@@ -12,6 +12,7 @@ from langchain_openai import ChatOpenAI
 from langchain.agents import create_agent
 from langgraph.graph.state import CompiledStateGraph
 
+from a2a_common.mcp_urls import MCP_GOOGLE_URL
 from agent_outreach.prompts.get_urls import PROMPT_URLS
 from agent_outreach.workflow.models import AgentState
 
@@ -53,18 +54,22 @@ async def extract_urls(state: AgentState) -> dict:
     Returns:
         dict: containing the extracted company, website and linkedin_url.
     """
-    mcp_client = MultiServerMCPClient(
-        {
-            "google_search": {
-                "url": (
-                    f"http://{os.getenv('HOST_MCP_GOOGLE', 'localhost')}"
-                    + f":{os.getenv('PORT_MCP_GOOGLE', '8001')}/mcp"
-                ),
-                "transport": "streamable_http",
+    search_tools = []
+    try:
+        mcp_client = MultiServerMCPClient(
+            {
+                "google_search": {
+                    "url": MCP_GOOGLE_URL,
+                    "transport": "streamable_http",
+                }
             }
-        }
-    )
-    search_tools = await mcp_client.get_tools()
+        )
+        search_tools = await mcp_client.get_tools()
+    except Exception as e:  # pylint: disable=broad-except
+        logger.error(
+            "Failed to connect to MCP servers, will continue with incomplete toolset: %s",
+            repr(e),
+        )
     model = ChatOpenAI(model=os.getenv("CHAT_MODEL", "gpt-4.1-mini"), temperature=0)
     search_agent: CompiledStateGraph = create_agent(
         model=model,
