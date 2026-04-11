@@ -1,0 +1,63 @@
+# Mac OS
+*.DS_Store
+
+# do not commit the actual databases
+db/*.sqlite
+db/*.sqlite-*
+db/*.zip
+
+# keep the actual environment variables out
+.env
+.venv
+*.swp
+
+# Distribution / packaging
+build/
+dist/
+lib/
+libs/
+lib64/
+sdist/
+var/
+wheels/
+*.egg-info/
+*.egg
+eggs/
+.eggs/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*$py.class
+
+# C extensions
+*.so
+*~
+
+# Unit test / coverage reports
+htmlcov/
+.coverage*
+coverage.*
+.cache
+.pytest_cache/
+.tox
+junit-pytest.xml
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+
+# IDE
+# Track only VS Code launch.json; ignore other workspace files
+.vscode/*
+!.vscode/launch.json
+!.vscode/tasks.json
+
+# Cache file
+.ruff_cache
+
+# Playwright
+node_modules/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/
