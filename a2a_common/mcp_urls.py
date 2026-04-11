@@ -13,5 +13,5 @@ MCP_GOOGLE_URL = (
 )
 MCP_NEWS_URL = (
     f"http://{os.getenv('HOST_MCP_NEWS', 'localhost')}"
-    + f":{os.getenv('PORT_MCP_NEWS', '9003')}/mcp"
+    + f":{os.getenv('PORT_MCP_NEWS', '9002')}/mcp"
 )
