@@ -1,6 +1,5 @@
 """Unit tests for the Crawl4AI MCP Server."""
 
-import json
 from unittest.mock import patch, MagicMock, AsyncMock
 
 import pytest
@@ -177,7 +176,7 @@ class TestDeepCrawlMCP:
     @patch("mcp_crawl4ai.__main__.AsyncWebCrawler")
     async def test_tool_callable_via_mcp(self, mock_crawler_cls):
         crawl_results = [
-            _make_crawl_result("https://test.com", score=1.0, content="# Test"),
+            _make_crawl_result("https://test.com", score=1, content="# Test"),
         ]
 
         mock_crawler = AsyncMock()

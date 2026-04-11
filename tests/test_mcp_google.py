@@ -1,6 +1,5 @@
 """Unit tests for the Google Search MCP Server."""
 
-import json
 from unittest.mock import patch, MagicMock
 
 import pytest
@@ -55,6 +54,7 @@ class TestWebSearchFunction:
         mock_wrapper_cls.return_value = mock_instance
 
         results = await web_search("query", nr_results=5)
+        assert results
         mock_wrapper_cls.assert_called_once_with(k=5)
         mock_instance.results.assert_called_once_with("query", 5)
 
@@ -98,7 +98,7 @@ class TestWebSearchMCP:
 
     @pytest.mark.asyncio
     @patch("mcp_google.__main__.GoogleSearchAPIWrapper")
-    async def test_tool_listed_in_tools(self, mock_wrapper_cls):
+    async def test_tool_listed_in_tools(self, _mock_wrapper_cls):
         async with create_connected_server_and_client_session(
             mcp._mcp_server  # pylint: disable=protected-access
         ) as client:
